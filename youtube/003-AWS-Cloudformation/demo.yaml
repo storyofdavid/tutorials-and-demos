@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: LogGroup Example
+Description: LogGroup Example Template
 
 Resources:
   ExampleLogGroup:

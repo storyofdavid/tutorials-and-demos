@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: LogGroup Example Template
+
+Resources:
+  ExampleLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: david-example
