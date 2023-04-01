@@ -1,0 +1,24 @@
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.medium
+      ImageId: ami-0c94855ba95c71c99 # Amazon Linux 2
+      #KeyName: my-key-pair
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.7.0-linux-x86_64.tar.gz
+          tar -xzf elasticsearch-8.7.0-linux-x86_64.tar.gz
+      SecurityGroups:
+        - !Ref MySecurityGroup
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open to the world on port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0

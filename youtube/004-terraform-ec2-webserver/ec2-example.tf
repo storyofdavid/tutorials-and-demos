@@ -4,16 +4,16 @@ provider "aws" {
 
 resource "aws_instance" "my_web_server" {
 
-  #change to latest AMI value
   ami           = "ami-0b0dcb5067f052a63"
   instance_type = "t2.micro"
   security_groups = [aws_security_group.allow_http.name]
+
   user_data = "${file("init.sh")}"
   
     tags = {
     Name = "MyWebServer"
   }
-}
+} 
 
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"

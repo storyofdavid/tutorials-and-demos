@@ -1,0 +1,23 @@
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.medium
+      ImageId: ami-005b7876121b7244d # Red Hat 7
+      KeyName: web-ui # Manually created via AWS Console
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          echo 'hello'
+      SecurityGroups:
+        - !Ref MySecurityGroup
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open to the world
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
