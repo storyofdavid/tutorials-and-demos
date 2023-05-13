@@ -1,5 +1,5 @@
 # tutorials-and-demos
-A collection of Tutorials and Demos from my Tech Social Media
+A collection of Tutorials and Demos relating to content created across my Tech Social Media platforms
 
 Tiktok: https://www.tiktok.com/@techwithdavid.
 
