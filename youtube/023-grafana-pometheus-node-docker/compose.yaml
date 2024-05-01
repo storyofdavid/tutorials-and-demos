@@ -35,6 +35,8 @@ services:
       - prom_data:/prometheus
     extra_hosts:
       - "host.docker.internal:node-exporter"
+      # NOTE: you may need to use host-gateway instead of node-exporter -- some versions of linux require this small change
+      # - host.docker.internal:host-gateway
   grafana:
     image: grafana/grafana
     container_name: grafana
