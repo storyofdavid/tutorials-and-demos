@@ -74,8 +74,9 @@ const HelloWorldIntentHandler = {
         makeSyncPostRequest();
 
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            //.reprompt('anything else?')
+            .speak(speakOutput + ' Say hello to communicate again.')
+         // Continue interaction by saying hello otherwise stoping the conversation.
+            .reprompt('If you have another question you can say hello otherwise stop.')
             .getResponse();
     }
 };
