@@ -1,0 +1,31 @@
+
+- id: '1729021149149' # Randomly generated unique id 
+  alias: Health Checks
+  description: Sends a mobile notification when any health check fails
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.bazarr_health_check # These are the names of our restful binary sensors defined in configuration.yaml
+    - binary_sensor.lidarr_health_check
+    - binary_sensor.radarr_health_check
+    - binary_sensor.sonarr_health_check
+    - binary_sensor.readarr_health_check
+    - binary_sensor.jellyfin_health_check
+    - binary_sensor.prowlarr_health_check
+    - binary_sensor.nextcloud_health_check
+    - binary_sensor.qbittorent_health_check
+    - binary_sensor.portainer_health_check
+    from: 'on' # Will trigger from on to any other state
+    to:
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_galaxy_s24
+    metadata: {}
+    data:
+      title: Raspberry Pi
+      message: '{{ trigger.to_state.attributes.friendly_name }} failed.'
+  mode: single

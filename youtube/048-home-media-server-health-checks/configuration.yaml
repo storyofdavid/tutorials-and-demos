@@ -1,0 +1,84 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Allows you to run custom python scripts
+pyscript:
+  allow_all_imports: true
+  hass_is_global: true
+
+logger:
+  default: info
+  logs:
+    custom_components.pyscript: debug
+
+binary_sensor:
+  - platform: rest
+    name: Jellyfin Health Check
+    resource: http://192.168.4.40:8096/health
+    method: GET
+    value_template: "{{ value == 'Healthy' }}"  # Check if the response is "healthy"
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Prowlarr Health Check
+    resource: http://192.168.4.40:9696
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Sonarr Health Check
+    resource: http://192.168.4.40:8989
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Radarr Health Check
+    resource: http://192.168.4.40:7878
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Bazarr Health Check
+    resource: http://192.168.4.40:6767
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Readarr Health Check
+    resource: http://192.168.4.40:8787
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: Lidarr Health Check
+    resource: http://192.168.4.40:8686
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: qBittorent Health Check
+    resource: http://localhost:8081
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+  - platform: rest
+    name: NextCloud Health Check
+    resource: https://192.168.4.40/login
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+    verify_ssl: false
+  - platform: rest
+    name: Portainer Health Check
+    resource: https://192.168.4.40:9443
+    method: GET
+    value_template: "{{ value is not none }}"  # Non-empty response indicates status 200
+    scan_interval: 60  # Check every 60 seconds
+    verify_ssl: false
