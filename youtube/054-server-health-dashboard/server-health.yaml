@@ -1,0 +1,43 @@
+views:
+  - title: Home
+    cards:
+      - graph: line
+        type: sensor
+        entity: sensor.system_monitor_processor_use
+        detail: 1
+      - graph: line
+        type: sensor
+        entity: sensor.system_monitor_memory_usage
+        detail: 1
+      - graph: line
+        type: sensor
+        entity: sensor.system_monitor_processor_temperature
+        detail: 1
+      - type: entities
+        entities:
+          - entity: binary_sensor.bazarr_health_check
+          - entity: binary_sensor.lidarr_health_check
+          - entity: binary_sensor.radarr_health_check
+          - entity: binary_sensor.sonarr_health_check
+          - entity: binary_sensor.readarr_health_check
+          - entity: binary_sensor.jellyfin_health_check
+          - entity: binary_sensor.prowlarr_health_check
+          - entity: binary_sensor.nextcloud_health_check
+          - entity: binary_sensor.portainer_health_check
+          - entity: binary_sensor.qbittorent_health_check
+        title: Service Status
+        state_color: false
+        show_header_toggle: true
+      - graph: line
+        type: sensor
+        entity: sensor.speedtest_download
+        detail: 1
+      - graph: line
+        type: sensor
+        entity: sensor.speedtest_upload
+        detail: 1
+      - type: entity
+        entity: sensor.system_monitor_disk_free
+        state_color: false
+      - type: entity
+        entity: sensor.system_monitor_disk_free_media
