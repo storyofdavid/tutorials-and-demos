@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks with Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0/css/duotone.css">
+
+    <style>
+        /* Using Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for completed tasks */
+        .completed .task-text {
+            text-decoration: line-through;
+            color: #9ca3af; /* Tailwind gray-400 */
+        }
+         /* Custom style for the list item background and border */
+        .task-item {
+            background-color: #f9fafb; /* Tailwind gray-50 */
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            margin-bottom: 0.5rem; /* Add some space between items */
+            padding: 0.75rem 1rem; /* Adjust padding */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Subtle shadow */
+        }
+         /* Hide the default checkbox and style a custom circular one */
+        input[type="checkbox"].custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            height: 1.25rem;
+            width: 1.25rem;
+            border: 2px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 50%; /* Make it circular */
+            cursor: pointer;
+            display: inline-block;
+            outline: none;
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        input[type="checkbox"].custom-checkbox:checked {
+            background-color: #ffffff; /* White background when checked */
+            border-color: #22c55e; /* Tailwind green-500 border when checked */
+        }
+
+        /* Style for the checkbox/Icon container */
+        .checkbox-container {
+            position: relative;
+            margin-right: 0.75rem; /* Space between checkbox area and text */
+            flex-shrink: 0;
+            /* Ensure container has dimensions for absolute positioning */
+            width: 1.25rem; /* Match checkbox size */
+            height: 1.25rem; /* Match checkbox size */
+            display: flex; /* Use flex to center content */
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Style for the Font Awesome checkmark icon */
+        .checkbox-container .checkmark-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem; /* Adjust icon size */
+            color: #22c55e; /* Green color */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; /* Prevent icon from interfering with checkbox click */
+        }
+
+        /* Show the icon when the list item is completed */
+        .task-item.completed .checkmark-icon {
+            opacity: 1;
+        }
+
+        /* Style for the delete button */
+        .delete-button {
+            background-color: transparent; /* No background */
+            border: none; /* No border */
+            color: #9ca3af; /* Tailwind gray-400 - default gray color */
+            transition: color 0.2s ease-in-out; /* Smooth color transition */
+            padding: 0.5rem; /* Add some padding for easier clicking */
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            color: #ef4444; /* Tailwind red-500 - red color on hover */
+        }
+
+        /* Calendar styles */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.2rem; /* Further reduced gap for smaller size */
+            text-align: center;
+        }
+
+        .calendar-day {
+            padding: 0.3rem; /* Further reduced padding for smaller size */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            position: relative; /* Needed for dot positioning */
+             display: flex; /* Use flex to center day number and dot */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+             font-size: 0.875rem; /* Smaller font size for days */
+        }
+
+        .calendar-day:hover {
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+        }
+
+        .calendar-day.current-month {
+            color: #1f2937; /* Tailwind gray-800 */
+        }
+
+        .calendar-day.other-month {
+            color: #9ca3af; /* Tailwind gray-400 */
+        }
+
+        .calendar-day.selected {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-header {
+            grid-column: span 7;
+            display: flex; /* Use flex for header layout */
+            justify-content: space-between; /* Space out elements */
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 0.8rem; /* Reduced margin */
+             font-size: 1rem; /* Smaller header font size */
+        }
+
+        .calendar-header button {
+            padding: 0.1rem 0.3rem; /* Reduced button padding */
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem; /* Smaller button icon size */
+            color: #1f2937; /* Tailwind gray-800 */
+            transition: color 0.2s ease-in-out;
+        }
+
+        .calendar-header button:hover {
+            color: #3b82f6; /* Tailwind blue-500 */
+        }
+
+        /* Task indicator dot */
+        .task-indicator-dot {
+            width: 5px; /* Smaller dot size */
+            height: 5px; /* Smaller dot size */
+            background-color: #22c55e; /* Tailwind green-500 */
+            border-radius: 50%;
+            margin-top: 0.1rem; /* Reduced space between day number and dot */
+        }
+
+         /* Days of the week header style */
+        .days-of-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.2rem; /* Match calendar gap */
+            text-align: center;
+            font-size: 0.75rem; /* Smaller font size */
+            font-weight: bold;
+            color: #6b7280; /* Tailwind gray-500 */
+            margin-bottom: 0.5rem; /* Space below days of week */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Daily Tasks</h1>
+
+        <div class="calendar-container mb-6 bg-gray-50 p-4 rounded-lg shadow-sm">
+            <div class="calendar-header">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <span id="current-month-year"></span>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
+             <div class="days-of-week">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div class="calendar" id="calendar-days">
+                </div>
+        </div>
+
+        <div class="flex items-center mb-6 bg-gray-50 p-3 rounded-lg shadow-sm">
+            <input type="text" id="new-task" class="flex-grow p-2 bg-transparent border-none focus:outline-none text-gray-800" placeholder="Add a new task...">
+            <button id="add-task-button" class="ml-3 w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="tasks-by-date">
+            </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const newTaskInput = document.getElementById('new-task');
+            const addTaskButton = document.getElementById('add-task-button');
+            const tasksByDateContainer = document.getElementById('tasks-by-date');
+            const calendarDaysContainer = document.getElementById('calendar-days');
+            const currentMonthYearDisplay = document.getElementById('current-month-year');
+            const prevMonthButton = document.getElementById('prev-month');
+            const nextMonthButton = document.getElementById('next-month');
+
+
+            let selectedDate = new Date(); // Default to today
+            let currentMonth = selectedDate.getMonth();
+            let currentYear = selectedDate.getFullYear();
+            let tasks = {}; // Object to store tasks, keyed by date (YYYY-MM-DD)
+
+            // Function to render the calendar
+            function renderCalendar() {
+                const date = new Date(currentYear, currentMonth);
+                const year = date.getFullYear();
+                const month = date.getMonth();
+
+                currentMonthYearDisplay.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+                calendarDaysContainer.innerHTML = ''; // Clear previous days
+
+                // Get the first day of the month and the last day of the month
+                const firstDayOfMonth = new Date(year, month, 1);
+                const lastDayOfMonth = new Date(year, month + 1, 0);
+
+                // Get the day of the week for the first day (0 for Sunday, 6 for Saturday)
+                const startDayOfWeek = firstDayOfMonth.getDay();
+
+                // Get the number of days in the previous month
+                const lastDayOfPrevMonth = new Date(year, month, 0);
+                const daysInPrevMonth = lastDayOfPrevMonth.getDate();
+
+                // Get the number of days in the current month
+                const daysInCurrentMonth = lastDayOfMonth.getDate();
+
+                // Add empty divs for the days before the first day of the month
+                for (let i = 0; i < startDayOfWeek; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('calendar-day', 'other-month');
+                    dayElement.textContent = daysInPrevMonth - startDayOfWeek + i + 1;
+                    calendarDaysContainer.appendChild(dayElement);
+                }
+
+                // Add days of the current month
+                for (let i = 1; i <= daysInCurrentMonth; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('calendar-day', 'current-month');
+                    dayElement.textContent = i;
+                    const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    dayElement.dataset.date = dateString;
+
+                    // Highlight the selected date
+                    if (dateString === formatDate(selectedDate)) {
+                         dayElement.classList.add('selected');
+                    }
+
+                    // Add task indicator dot if there are tasks for this date
+                    if (tasks[dateString] && tasks[dateString].length > 0) {
+                        const dot = document.createElement('div');
+                        dot.classList.add('task-indicator-dot');
+                        dayElement.appendChild(dot);
+                    }
+
+
+                    dayElement.addEventListener('click', () => {
+                        // Remove selected class from previous selected day
+                        const previouslySelected = calendarDaysContainer.querySelector('.calendar-day.selected');
+                        if (previouslySelected) {
+                            previouslySelected.classList.remove('selected');
+                        }
+                        // Add selected class to the clicked day
+                        dayElement.classList.add('selected');
+                        selectedDate = new Date(year, month, i);
+                        renderTasksForSelectedDate(); // Render tasks for the newly selected date
+                    });
+
+                    calendarDaysContainer.appendChild(dayElement);
+                }
+
+                // Add days of the next month to fill the grid
+                const totalDaysDisplayed = startDayOfWeek + daysInCurrentMonth;
+                const remainingDays = 42 - totalDaysDisplayed; // Display up to 6 weeks (6 * 7 = 42)
+
+                for (let i = 1; i <= remainingDays; i++) {
+                     const dayElement = document.createElement('div');
+                     dayElement.classList.add('calendar-day', 'other-month');
+                     dayElement.textContent = i;
+                     calendarDaysContainer.appendChild(dayElement);
+                }
+            }
+
+            // Function to format a date as-MM-DD
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Function to render tasks for the selected date
+            function renderTasksForSelectedDate() {
+                tasksByDateContainer.innerHTML = ''; // Clear previous tasks
+
+                const dateString = formatDate(selectedDate);
+                const tasksForToday = tasks[dateString] || [];
+
+                if (tasksForToday.length === 0) {
+                    const noTasksMessage = document.createElement('p');
+                    noTasksMessage.textContent = 'No tasks for this date.';
+                    noTasksMessage.classList.add('text-center', 'text-gray-500');
+                    tasksByDateContainer.appendChild(noTasksMessage);
+                } else {
+                    const taskList = document.createElement('ul');
+                    taskList.classList.add('divide-y', 'divide-gray-200');
+                    tasksForToday.forEach((task, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('flex', 'items-center', 'justify-between', 'task-item');
+                        if (task.completed) {
+                            listItem.classList.add('completed');
+                        }
+
+                        const taskContent = document.createElement('div');
+                        taskContent.classList.add('flex', 'items-center', 'flex-grow');
+
+                        const checkboxContainer = document.createElement('div');
+                        checkboxContainer.classList.add('relative', 'flex', 'items-center', 'checkbox-container');
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.classList.add('cursor-pointer', 'custom-checkbox');
+                        checkbox.checked = task.completed; // Set checkbox state
+
+                        checkbox.addEventListener('change', () => {
+                            task.completed = checkbox.checked; // Update task completion status
+                            if (task.completed) {
+                                listItem.classList.add('completed');
+                            } else {
+                                listItem.classList.remove('completed');
+                            }
+                             // Re-render tasks for the current date to update the display
+                            renderTasksForSelectedDate();
+                        });
+
+                        const checkmarkIcon = document.createElement('i');
+                        checkmarkIcon.className = 'fa-duotone fa-solid fa-circle-check checkmark-icon';
+                        checkmarkIcon.style.setProperty('--fa-primary-color', '#51e203');
+                        checkmarkIcon.style.setProperty('--fa-secondary-color', '#51e203');
+
+
+                        const taskSpan = document.createElement('span');
+                        taskSpan.textContent = task.text;
+                        taskSpan.classList.add('task-text', 'text-gray-800', 'flex-grow', 'mr-4');
+
+                        const deleteButtonContainer = document.createElement('div');
+                        deleteButtonContainer.classList.add('flex-shrink-0');
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                        deleteButton.classList.add('delete-button', 'text-sm', 'flex', 'items-center', 'justify-center');
+
+                        deleteButton.addEventListener('click', () => {
+                            // Remove task from the array
+                            tasks[dateString].splice(index, 1);
+                            // Re-render tasks for the current date
+                            renderTasksForSelectedDate();
+                            renderCalendar(); // Re-render calendar to update dot indicators
+                        });
+
+                        checkboxContainer.appendChild(checkbox);
+                        checkboxContainer.appendChild(checkmarkIcon);
+                        taskContent.appendChild(checkboxContainer);
+                        taskContent.appendChild(taskSpan);
+                        listItem.appendChild(taskContent);
+                        deleteButtonContainer.appendChild(deleteButton);
+                        listItem.appendChild(deleteButtonContainer);
+
+                        taskList.appendChild(listItem);
+                    });
+                    tasksByDateContainer.appendChild(taskList);
+                }
+            }
+
+            // Add task when button is clicked
+            addTaskButton.addEventListener('click', () => {
+                const taskText = newTaskInput.value.trim();
+                if (taskText !== '') {
+                    const dateString = formatDate(selectedDate);
+                    if (!tasks[dateString]) {
+                        tasks[dateString] = [];
+                    }
+                    tasks[dateString].push({ text: taskText, completed: false });
+                    newTaskInput.value = '';
+                    renderTasksForSelectedDate(); // Re-render tasks after adding
+                    renderCalendar(); // Re-render calendar to update dot indicators
+                }
+            });
+
+            // Add task when Enter key is pressed in the input field
+            newTaskInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    const taskText = newTaskInput.value.trim();
+                    if (taskText !== '') {
+                        const dateString = formatDate(selectedDate);
+                         if (!tasks[dateString]) {
+                            tasks[dateString] = [];
+                        }
+                        tasks[dateString].push({ text: taskText, completed: false });
+                        newTaskInput.value = '';
+                        renderTasksForSelectedDate(); // Re-render tasks after adding
+                        renderCalendar(); // Re-render calendar to update dot indicators
+                    }
+                }
+            });
+
+            // Event listeners for month navigation buttons
+            prevMonthButton.addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar();
+                 // Keep the same day selected if possible, otherwise select the last day of the previous month
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                if (selectedDate.getDate() > daysInMonth) {
+                    selectedDate = new Date(currentYear, currentMonth, daysInMonth);
+                } else {
+                     selectedDate = new Date(currentYear, currentMonth, selectedDate.getDate());
+                }
+                 renderTasksForSelectedDate(); // Render tasks for the new month's selected date
+            });
+
+            nextMonthButton.addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar();
+                 // Keep the same day selected if possible, otherwise select the last day of the next month
+                 const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                if (selectedDate.getDate() > daysInMonth) {
+                    selectedDate = new Date(currentYear, currentMonth, daysInMonth);
+                } else {
+                     selectedDate = new Date(currentYear, currentMonth, selectedDate.getDate());
+                }
+                renderTasksForSelectedDate(); // Render tasks for the new month's selected date
+            });
+
+
+            // Initial render of the calendar and tasks for today
+            renderCalendar();
+            renderTasksForSelectedDate();
+        });
+    </script>
+</body>
+</html>
+
