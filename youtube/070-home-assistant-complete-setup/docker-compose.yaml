@@ -1,0 +1,21 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    build: .
+    # image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+    # Set the correct location for your setup... most likely /home/$User/HomeAssistant/config:/config
+      - /home/dolding/HomeAssistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+      - /dev:/dev
+      # Optional mapping if you have an external hard drive
+      - type: bind
+      # Make sure the source matches the location your drive is mapped to - instructions in video
+        source: /media/dolding/Expansion
+        target: /media
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0

@@ -1,0 +1,77 @@
+views:
+  - title: Home
+    layout:
+      type: custom:grid-layout
+      columns: auto
+      min_column_width: 250px
+      max_width: 100%
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            icon: mdi:server
+            heading: Server
+            heading_style: title
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_processor_use
+            detail: 1
+            name: CPU Usage
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_memory_usage
+            detail: 1
+            name: Memory Usage
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_processor_temperature
+            detail: 1
+            name: Temp
+        column_span: 4
+      - type: grid
+        cards:
+          - type: heading
+            heading: Network
+            heading_style: title
+            icon: mdi:access-point-network
+          - graph: line
+            type: sensor
+            entity: sensor.speedtest_download
+            detail: 1
+            name: Download
+          - graph: line
+            type: sensor
+            entity: sensor.speedtest_upload
+            detail: 1
+            name: Upload
+          - graph: line
+            type: sensor
+            entity: sensor.speedtest_ping
+            detail: 1
+            name: Ping
+        column_span: 4
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Storage
+            icon: mdi:nas
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_disk_free
+            detail: 1
+            name: SD Card Free
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_disk_free_media
+            detail: 1
+            name: External Drive Free
+        column_span: 4
+    header:
+      card:
+        type: markdown
+        content: '# Server Health'
+        text_only: true
+      layout: responsive
+      badges_position: bottom
+      badges_wrap: wrap
