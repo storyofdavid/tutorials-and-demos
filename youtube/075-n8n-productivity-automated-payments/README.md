@@ -36,7 +36,9 @@ https://github.com/up-banking/api/issues/132
 Method: ```GET```
 
 URL: ```https://api.wise.com/v4/profiles/{{ $json.profileId }}/balances?types=STANDARD,SAVINGS```
-</br>
+
+</br></br>
+
 <b>Crypto</b>
 
 Action: ```Generate```
@@ -44,7 +46,9 @@ Action: ```Generate```
 Property Name:```X-idempotence-uuid```
 
 Type: ```UUID```
-</br>
+
+</br></br>
+
 <b>Pay Yourself</b>
 
 Method: ```POST```
