@@ -20,7 +20,9 @@ ntfy        https://ntfy.sh
 
 
 up banking open issues to allow payments and transfers directly via api
+
 https://github.com/up-banking/api/issues/16
+
 https://github.com/up-banking/api/issues/132
 
 
