@@ -9,9 +9,13 @@ Youtube Video: https://youtu.be/MGQI3VQbAmA
 
 ## Websites
 n8n         https://n8n.io
+
 n8n github  https://github.com/n8n-io/n8n
+
 docker      https://www.docker.com
+
 todoist     https://app.todoist.com
+
 ntfy        https://ntfy.sh
 
 
