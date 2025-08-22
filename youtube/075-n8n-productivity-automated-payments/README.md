@@ -19,7 +19,7 @@ todoist     https://app.todoist.com
 ntfy        https://ntfy.sh
 
 
-
+</br></br>
 up banking open issues to allow payments and transfers directly via api
 
 https://github.com/up-banking/api/issues/16
@@ -36,7 +36,7 @@ https://github.com/up-banking/api/issues/132
 Method: ```GET```
 
 URL: ```https://api.wise.com/v4/profiles/{{ $json.profileId }}/balances?types=STANDARD,SAVINGS```
-
+</br>
 <b>Crypto</b>
 
 Action: ```Generate```
@@ -44,7 +44,7 @@ Action: ```Generate```
 Property Name:```X-idempotence-uuid```
 
 Type: ```UUID```
-
+</br>
 <b>Pay Yourself</b>
 
 Method: ```POST```
