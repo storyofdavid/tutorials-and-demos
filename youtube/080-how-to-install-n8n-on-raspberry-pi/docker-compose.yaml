@@ -1,0 +1,21 @@
+services:
+  n8n:
+  # Pulls the latest stable version of n8n
+    image: docker.n8n.io/n8nio/n8n:stable
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+    # This is for a local non production setup as described in the video
+    # Update the timezone to your local timezone
+      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=Australia/Melbourne
+      - TZ=Australia/Melbourne
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./local-files:/files
+      # Optional volume path, this is for accessing media on an external drive
+      # Update the path to your external drive mount point or remove if not needed
+      - /media/dolding/Expansion:/media
+volumes:
+  n8n_data:
