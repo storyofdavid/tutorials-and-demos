@@ -1,0 +1,25 @@
+type: custom:mini-graph-card
+name: CPU Usage
+icon: mdi:cpu-64-bit
+entities:
+  - entity: sensor.system_monitor_processor_use
+    name: CPU Usage
+    unit: "%"
+    show_state: true
+    color: "#94ecbe"
+hours_to_show: 24
+points_per_hour: 2
+aggregate_func: avg
+group_by: interval
+show:
+  fill: true
+  graph: line
+color_thresholds:
+  - value: 50
+    color: "#00ff00"
+  - value: 70
+    color: "#ffff00"
+  - value: 85
+    color: "#ff0000"
+height: 100
+line_width: 4
